@@ -21,4 +21,14 @@ class BookService(
         return bookRepository.findByStatus(BookStatus.ATIVO)
     }
 
+    fun findById(id: Int): BookModel {
+        return bookRepository.findById(id).orElseThrow()
+    }
+
+    fun delete(id: Int) {
+        val book = findById(id)
+        book.status = BookStatus.CANCELADO
+        bookRepository.save(book)
+    }
+
 }

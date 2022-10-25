@@ -2,6 +2,7 @@ package com.mercadolivro.controller
 
 import com.mercadolivro.service.BookService
 import com.mercadolivro.controller.request.PostBookRequest
+import com.mercadolivro.enums.BookStatus
 import com.mercadolivro.extension.toBookModel
 import com.mercadolivro.model.BookModel
 import com.mercadolivro.service.CustomerService
@@ -30,6 +31,17 @@ class BookController(
     @GetMapping("/active")
     fun findActives(): List<BookModel>{
         return bookService.findActives()
+    }
+
+    @GetMapping("/{id}")
+    fun findActives(@PathVariable id: Int): BookModel{
+        return bookService.findById(id)
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable id: Int){
+        bookService.delete(id)
     }
 
 }
