@@ -31,4 +31,8 @@ class BookService(
         bookRepository.save(book)
     }
 
+    fun update(bookModel: BookModel) {
+        bookRepository.save(bookModel)
+    }
+
 }

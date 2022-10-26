@@ -2,6 +2,7 @@ package com.mercadolivro.controller
 
 import com.mercadolivro.service.BookService
 import com.mercadolivro.controller.request.PostBookRequest
+import com.mercadolivro.controller.request.PutBookRequest
 import com.mercadolivro.enums.BookStatus
 import com.mercadolivro.extension.toBookModel
 import com.mercadolivro.model.BookModel
@@ -42,6 +43,13 @@ class BookController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Int){
         bookService.delete(id)
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest){
+        val bookSaved = bookService.findById(id)
+        bookService.update(book.toBookModel(bookSaved))
     }
 
 }
