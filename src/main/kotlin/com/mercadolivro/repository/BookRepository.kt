@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface BookRepository : CrudRepository<BookModel, Int>{
     abstract fun findByStatus(ativo: BookStatus): List<BookModel>
+    fun findByCustomer(customer: CustomerModel): List<BookModel>
 }
