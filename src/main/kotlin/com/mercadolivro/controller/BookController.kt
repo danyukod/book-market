@@ -1,10 +1,11 @@
 package com.mercadolivro.controller
 
-import com.mercadolivro.service.BookService
+import com.mercadolivro.controller.reponse.BookResponse
 import com.mercadolivro.controller.request.PostBookRequest
 import com.mercadolivro.controller.request.PutBookRequest
 import com.mercadolivro.extension.toBookModel
-import com.mercadolivro.model.BookModel
+import com.mercadolivro.extension.toResponse
+import com.mercadolivro.service.BookService
 import com.mercadolivro.service.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -18,35 +19,35 @@ class BookController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody request: PostBookRequest){
+    fun create(@RequestBody request: PostBookRequest) {
         val customer = customerService.findById(request.customerId)
         bookService.create(request.toBookModel(customer))
     }
 
     @GetMapping
-    fun findAll(): List<BookModel>{
-        return bookService.findAll()
+    fun findAll(): List<BookResponse> {
+        return bookService.findAll().map { it.toResponse() }
     }
 
     @GetMapping("/active")
-    fun findActives(): List<BookModel>{
-        return bookService.findActives()
+    fun findActives(): List<BookResponse> {
+        return bookService.findActives().map { it.toResponse() }
     }
 
     @GetMapping("/{id}")
-    fun findActives(@PathVariable id: Int): BookModel{
-        return bookService.findById(id)
+    fun findActives(@PathVariable id: Int): BookResponse {
+        return bookService.findById(id).toResponse()
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id: Int){
+    fun delete(@PathVariable id: Int) {
         bookService.delete(id)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest){
+    fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest) {
         val bookSaved = bookService.findById(id)
         bookService.update(book.toBookModel(bookSaved))
     }
