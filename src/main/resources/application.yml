@@ -8,3 +8,8 @@ spring:
     password: root
   jackson:
     default-property-inclusion: non_null
+
+springdoc:
+  packages-to-scan: com.mercadolivro.controller
+  swagger-ui:
+    path: /swagger.html
