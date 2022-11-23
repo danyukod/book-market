@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("purchases")
@@ -19,7 +20,7 @@ class PurchaseController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun purchase(@RequestBody request: PostPurchaseRequest){
+    fun purchase(@RequestBody @Valid request: PostPurchaseRequest){
         purchaseService.create(purchaseMapper.toModel(request))
     }
 

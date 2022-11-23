@@ -59,4 +59,8 @@ class BookService(
         bookRepository.saveAll(books)
     }
 
+    fun availableBooks(values: Set<Int>?): Boolean {
+        return !findAllByIds(values!!).any{ it.status == BookStatus.VENDIDO}
+    }
+
 }
