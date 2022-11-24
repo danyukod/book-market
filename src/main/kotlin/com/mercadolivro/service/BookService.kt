@@ -60,7 +60,7 @@ class BookService(
     }
 
     fun availableBooks(values: Set<Int>?): Boolean {
-        return !findAllByIds(values!!).any{ it.status == BookStatus.VENDIDO}
+        return !findAllByIds(values!!).any{ it.status != BookStatus.ATIVO }
     }
 
 }
