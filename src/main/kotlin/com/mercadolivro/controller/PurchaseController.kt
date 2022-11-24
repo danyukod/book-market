@@ -21,9 +21,9 @@ class PurchaseController(
         purchaseService.create(purchaseMapper.toModel(request))
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/customer/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun purchases(@PathVariable id: Int): List<PurchaseResponse> {
+    fun findAllPurchasesByCustomer(@PathVariable id: Int): List<PurchaseResponse> {
         return purchaseService.findAllByCustomerId(id).map { purchaseMapper.toResponse(it) }
     }
 

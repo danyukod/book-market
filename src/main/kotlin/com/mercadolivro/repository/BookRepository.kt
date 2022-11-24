@@ -14,4 +14,5 @@ import org.springframework.stereotype.Repository
 interface BookRepository : JpaRepository<BookModel, Int>{
     abstract fun findByStatus(ativo: BookStatus, pageable: Pageable): Page<BookModel>
     fun findByCustomer(customer: CustomerModel): List<BookModel>
+    fun findAllByCustomerIdAndStatus(id: Int, bookStatus: BookStatus): List<BookModel>
 }

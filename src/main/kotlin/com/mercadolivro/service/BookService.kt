@@ -63,4 +63,8 @@ class BookService(
         return !findAllByIds(values!!).any{ it.status != BookStatus.ATIVO }
     }
 
+    fun findAllSalesBooksByCustomer(id: Int): List<BookModel> {
+        return bookRepository.findAllByCustomerIdAndStatus(id, BookStatus.VENDIDO)
+    }
+
 }
