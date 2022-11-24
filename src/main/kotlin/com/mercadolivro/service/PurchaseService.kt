@@ -23,4 +23,8 @@ class PurchaseService(
     fun update(purchaseModel: PurchaseModel) {
         purchaseRepository.save(purchaseModel)
     }
+
+    fun findAllByCustomerId(id: Int): List<PurchaseModel> {
+        return purchaseRepository.findAllByCustomerId(id);
+    }
 }

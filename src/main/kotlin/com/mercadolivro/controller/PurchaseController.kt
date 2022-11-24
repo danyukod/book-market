@@ -1,17 +1,11 @@
 package com.mercadolivro.controller
 
 import com.mercadolivro.controller.mapper.PurchaseMapper
+import com.mercadolivro.controller.reponse.PurchaseResponse
 import com.mercadolivro.controller.request.PostPurchaseRequest
 import com.mercadolivro.service.PurchaseService
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
@@ -23,14 +17,14 @@ class PurchaseController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun purchase(@RequestBody @Valid request: PostPurchaseRequest){
+    fun purchase(@RequestBody @Valid request: PostPurchaseRequest) {
         purchaseService.create(purchaseMapper.toModel(request))
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    fun purchases(@PathVariable id: Int) : PurchasesResponse {
-        
+    fun purchases(@PathVariable id: Int): List<PurchaseResponse> {
+        return purchaseService.findAllByCustomerId(id).map { purchaseMapper.toResponse(it) }
     }
 
 
