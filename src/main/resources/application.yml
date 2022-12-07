@@ -14,3 +14,7 @@ springdoc:
   packages-to-scan: com.mercadolivro.controller
   swagger-ui:
     path: /swagger.html
+
+jwt:
+  secret: 7bc31d13-18b7-4aac-91f5-f5b5731df496
+  expiration: 999999
