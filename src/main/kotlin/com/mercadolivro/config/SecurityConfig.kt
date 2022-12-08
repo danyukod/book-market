@@ -1,5 +1,6 @@
 package com.mercadolivro.config
 
+import com.mercadolivro.enums.Role
 import com.mercadolivro.repository.CustomerRepository
 import com.mercadolivro.security.AuthenticationFilter
 import com.mercadolivro.security.AuthorizationFilter
@@ -33,6 +34,10 @@ class SecurityConfig(
         "/customers"
     )
 
+    private val ADMIN_MATCHERS = arrayOf(
+        "/admin/**"
+    )
+
     @Bean
     fun authProvider(auth: AuthenticationManagerBuilder): DaoAuthenticationProvider{
         val authProvider = DaoAuthenticationProvider();
@@ -47,6 +52,7 @@ class SecurityConfig(
         http.authorizeRequests()
             .antMatchers(*PUBLIC_MATCHERS).permitAll()
             .antMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
+            .antMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
             .anyRequest().authenticated()
         http.addFilter(AuthenticationFilter(configuration.authenticationManager, customerRepository, jwtUtil))
         http.addFilter(AuthorizationFilter(configuration.authenticationManager, userDetails, jwtUtil))
