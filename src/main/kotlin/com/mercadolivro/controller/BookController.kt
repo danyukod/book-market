@@ -5,6 +5,8 @@ import com.mercadolivro.controller.request.PostBookRequest
 import com.mercadolivro.controller.request.PutBookRequest
 import com.mercadolivro.extension.toBookModel
 import com.mercadolivro.extension.toResponse
+import com.mercadolivro.security.OnlyAdmin
+import com.mercadolivro.security.OnlyUser
 import com.mercadolivro.service.BookService
 import com.mercadolivro.service.CustomerService
 import org.springframework.data.domain.Page
@@ -29,27 +31,32 @@ class BookController(
     }
 
     @GetMapping
+    @OnlyAdmin
     fun findAll(@PageableDefault(page = 0, size = 10) pageable: Pageable): Page<BookResponse> {
         return bookService.findAll(pageable).map { it.toResponse() }
     }
 
     @GetMapping("/active")
+    @OnlyAdmin
     fun findActives(@PageableDefault(page = 0, size = 10) pageable: Pageable): Page<BookResponse> {
         return bookService.findActives(pageable).map { it.toResponse() }
     }
 
     @GetMapping("/{id}")
+    @OnlyUser
     fun findActives(@PathVariable id: Int): BookResponse {
         return bookService.findById(id).toResponse()
     }
 
     @DeleteMapping("/{id}")
+    @OnlyUser
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Int) {
         bookService.delete(id)
     }
 
     @PutMapping("/{id}")
+    @OnlyUser
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@PathVariable id: Int, @RequestBody book: PutBookRequest) {
         val bookSaved = bookService.findById(id)
