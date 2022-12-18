@@ -4,6 +4,7 @@ import com.mercadolivro.enums.Role
 import com.mercadolivro.repository.CustomerRepository
 import com.mercadolivro.security.AuthenticationFilter
 import com.mercadolivro.security.AuthorizationFilter
+import com.mercadolivro.security.CustomAuthenticationEntryPoint
 import com.mercadolivro.security.JwtUtil
 import com.mercadolivro.service.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
@@ -30,7 +31,8 @@ class SecurityConfig(
     private val configuration: AuthenticationConfiguration,
     private val customerRepository: CustomerRepository,
     private val userDetails: UserDetailsCustomService,
-    private val jwtUtil: JwtUtil
+    private val jwtUtil: JwtUtil,
+    private val customEntryPoint: CustomAuthenticationEntryPoint
 ) {
 
     private val PUBLIC_MATCHERS =
@@ -55,11 +57,13 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.cors().and().csrf().disable()
+
         http.authorizeRequests()
             .antMatchers(*PUBLIC_MATCHERS).permitAll()
             .antMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
             .antMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
             .anyRequest().authenticated()
+
         http.addFilter(
             AuthenticationFilter(
                 configuration.authenticationManager,
@@ -67,6 +71,7 @@ class SecurityConfig(
                 jwtUtil
             )
         )
+
         http.addFilter(
             AuthorizationFilter(
                 configuration.authenticationManager,
@@ -74,7 +79,10 @@ class SecurityConfig(
                 jwtUtil
             )
         )
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+        http.exceptionHandling().authenticationEntryPoint(customEntryPoint)
 
         return http.build()
     }
