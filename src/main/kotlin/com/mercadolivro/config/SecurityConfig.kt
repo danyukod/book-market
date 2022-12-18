@@ -18,6 +18,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 
 @Configuration
@@ -30,7 +33,8 @@ class SecurityConfig(
     private val jwtUtil: JwtUtil
 ) {
 
-    private val PUBLIC_MATCHERS = arrayOf<String>()
+    private val PUBLIC_MATCHERS =
+        arrayOf("/v3/api-docs/**", "/swagger.html", "/swagger-ui/**")
 
     private val PUBLIC_POST_MATCHERS = arrayOf(
         "/customers"
@@ -41,7 +45,7 @@ class SecurityConfig(
     )
 
     @Bean
-    fun authProvider(auth: AuthenticationManagerBuilder): DaoAuthenticationProvider{
+    fun authProvider(auth: AuthenticationManagerBuilder): DaoAuthenticationProvider {
         val authProvider = DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetails)
         authProvider.setPasswordEncoder(bCryptPasswordEncoder())
@@ -56,11 +60,35 @@ class SecurityConfig(
             .antMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
             .antMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
             .anyRequest().authenticated()
-        http.addFilter(AuthenticationFilter(configuration.authenticationManager, customerRepository, jwtUtil))
-        http.addFilter(AuthorizationFilter(configuration.authenticationManager, userDetails, jwtUtil))
+        http.addFilter(
+            AuthenticationFilter(
+                configuration.authenticationManager,
+                customerRepository,
+                jwtUtil
+            )
+        )
+        http.addFilter(
+            AuthorizationFilter(
+                configuration.authenticationManager,
+                userDetails,
+                jwtUtil
+            )
+        )
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         return http.build()
+    }
+
+    @Bean
+    fun corsConfig(): CorsFilter{
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        config.addAllowedOrigin("*")
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/**", config)
+        return CorsFilter(source)
     }
 
     @Bean
