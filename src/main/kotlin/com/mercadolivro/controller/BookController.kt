@@ -1,9 +1,11 @@
 package com.mercadolivro.controller
 
 import com.mercadolivro.controller.reponse.BookResponse
+import com.mercadolivro.controller.reponse.PageResponse
 import com.mercadolivro.controller.request.PostBookRequest
 import com.mercadolivro.controller.request.PutBookRequest
 import com.mercadolivro.extension.toBookModel
+import com.mercadolivro.extension.toPageResponse
 import com.mercadolivro.extension.toResponse
 import com.mercadolivro.security.OnlyAdmin
 import com.mercadolivro.security.OnlyUser
@@ -32,14 +34,14 @@ class BookController(
 
     @GetMapping
     @OnlyAdmin
-    fun findAll(@PageableDefault(page = 0, size = 10) pageable: Pageable): Page<BookResponse> {
-        return bookService.findAll(pageable).map { it.toResponse() }
+    fun findAll(@PageableDefault(page = 0, size = 10) pageable: Pageable): PageResponse<BookResponse> {
+        return bookService.findAll(pageable).map { it.toResponse() }.toPageResponse()
     }
 
     @GetMapping("/active")
     @OnlyAdmin
-    fun findActives(@PageableDefault(page = 0, size = 10) pageable: Pageable): Page<BookResponse> {
-        return bookService.findActives(pageable).map { it.toResponse() }
+    fun findActives(@PageableDefault(page = 0, size = 10) pageable: Pageable): PageResponse<BookResponse> {
+        return bookService.findActives(pageable).map { it.toResponse() }.toPageResponse()
     }
 
     @GetMapping("/{id}")

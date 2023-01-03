@@ -36,7 +36,7 @@ class SecurityConfig(
 ) {
 
     private val PUBLIC_MATCHERS =
-        arrayOf("/v3/api-docs/**", "/swagger.html", "/swagger-ui/**")
+        arrayOf("/v3/api-docs/**", "/swagger.html", "/swagger-ui/**", "/actuator/**")
 
     private val PUBLIC_POST_MATCHERS = arrayOf(
         "/customers"

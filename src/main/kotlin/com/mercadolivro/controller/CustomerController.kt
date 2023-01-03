@@ -1,9 +1,11 @@
 package com.mercadolivro.controller
 
 import com.mercadolivro.controller.reponse.CustomerResponse
+import com.mercadolivro.controller.reponse.PageResponse
 import com.mercadolivro.controller.request.PostCustomerRequest
 import com.mercadolivro.controller.request.PutCustomerRequest
 import com.mercadolivro.extension.toCustomerModel
+import com.mercadolivro.extension.toPageResponse
 import com.mercadolivro.extension.toResponse
 import com.mercadolivro.security.OnlyAdmin
 import com.mercadolivro.security.OnlyUser
@@ -23,8 +25,8 @@ class CustomerController(
 
     @GetMapping
     @OnlyAdmin
-    fun getAll(@RequestParam name: String?, @PageableDefault(page = 0, size = 10) pageable: Pageable): Page<CustomerResponse> {
-        return customerService.getAll(name, pageable).map { it.toResponse() }
+    fun getAll(@RequestParam name: String?, @PageableDefault(page = 0, size = 10) pageable: Pageable): PageResponse<CustomerResponse> {
+        return customerService.getAll(name, pageable).map { it.toResponse() }.toPageResponse()
     }
 
     @PostMapping
