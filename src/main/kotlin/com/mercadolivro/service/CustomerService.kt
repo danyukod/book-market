@@ -18,6 +18,13 @@ class CustomerService(
     private val bCrypt: BCryptPasswordEncoder
 ) {
 
+    fun getAll(name: String?): List<CustomerModel> {
+        name?.let {
+            return customerRepository.findByNameContaining(it)
+        }
+        return customerRepository.findAll()
+    }
+
     fun getAll(name: String?, pageable: Pageable): Page<CustomerModel> {
         name?.let {
             return customerRepository.findByNameContaining(it, pageable)

@@ -85,9 +85,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.mockk</groupId>
-			<artifactId>mockk</artifactId>
-			<version>1.13.3</version>
+			<groupId>com.ninja-squad</groupId>
+			<artifactId>springmockk</artifactId>
+			<version>4.0.0</version>
 			<scope>test</scope>
 		</dependency>
 
