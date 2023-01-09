@@ -32,7 +32,7 @@ class CustomerServiceTest {
 
     @Test
     fun `should return all customers`(){
-
+        val name = UUID.randomUUID().toString()
         val customer1 = buildCustomer()
 
         val fakeCustomers = listOf(customer1)
@@ -47,9 +47,42 @@ class CustomerServiceTest {
 
     }
 
+    @Test
+    fun `should return customers when name is informed`(){
+        val name = UUID.randomUUID().toString()
+        val customer1 = buildCustomer()
+
+        val fakeCustomers = listOf(customer1)
+
+        every { customerRepository.findByNameContaining(name) } returns fakeCustomers
+
+        val customers = customerService.getAll(name)
+
+        assertEquals(fakeCustomers, customers)
+        verify(exactly = 0) { customerRepository.findAll() }
+        verify(exactly = 1) { customerRepository.findByNameContaining(name) }
+
+    }
+
+    @Test
+    fun `should create customer and encrypt password` (){
+        val fakeCustomer = buildCustomer()
+        val fakePassword = UUID.randomUUID().toString()
+
+
+        every { customerRepository.save(any()) } returns fakeCustomer
+        every { bCrypt.encode(any()) } returns fakePassword
+
+        customerService.create(fakeCustomer)
+
+        verify(exactly = 1) { customerRepository.save(any()) }
+        verify(exactly = 1) { bCrypt.encode(any()) }
+
+    }
+
     private fun buildCustomer(
         id: Int? = null,
-        name: String = "customer name",
+        name: String = "${UUID.randomUUID()} customer name",
         email: String = "${UUID.randomUUID()}@email.com",
         password: String = "password"
     ) = CustomerModel(
