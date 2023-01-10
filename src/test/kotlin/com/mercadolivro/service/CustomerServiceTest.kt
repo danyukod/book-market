@@ -2,9 +2,8 @@ package com.mercadolivro.service
 
 import com.mercadolivro.enums.CustomerStatus
 import com.mercadolivro.enums.Errors
-import com.mercadolivro.enums.Role
 import com.mercadolivro.exception.NotFoundException
-import com.mercadolivro.model.CustomerModel
+import com.mercadolivro.helper.buildCustomer
 import com.mercadolivro.repository.CustomerRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -38,7 +37,7 @@ class CustomerServiceTest {
     private lateinit var customerService: CustomerService
 
     @Test
-    fun `should return all customers`(){
+    fun `should return all customers`() {
         val name = UUID.randomUUID().toString()
         val customer1 = buildCustomer(name = name)
 
@@ -55,7 +54,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    fun `should return customers when name is informed`(){
+    fun `should return customers when name is informed`() {
         val name = UUID.randomUUID().toString()
         val customer1 = buildCustomer()
 
@@ -72,7 +71,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    fun `should create customer and encrypt password` (){
+    fun `should create customer and encrypt password`() {
         val initialPassword = Random().nextInt().toString()
         val fakeCustomer = buildCustomer(password = initialPassword)
         val fakePassword = UUID.randomUUID().toString()
@@ -106,7 +105,7 @@ class CustomerServiceTest {
 
         every { customerRepository.findById(id) } returns Optional.empty()
 
-        val error = assertThrows<NotFoundException>{
+        val error = assertThrows<NotFoundException> {
             customerService.findById(id)
         }
 
@@ -116,7 +115,7 @@ class CustomerServiceTest {
     }
 
     @Test
-    fun `should update customer`(){
+    fun `should update customer`() {
         val id = Random().nextInt()
         val fakeCustomer = buildCustomer(id = id)
 
@@ -130,14 +129,14 @@ class CustomerServiceTest {
     }
 
     @Test
-    fun `should throw not found exception when update customer`(){
+    fun `should throw not found exception when update customer`() {
         val id = Random().nextInt()
         val fakeCustomer = buildCustomer(id = id)
 
         every { customerRepository.existsById(id) } returns false
         every { customerRepository.save(fakeCustomer) } returns fakeCustomer
 
-        val error = assertThrows<NotFoundException>{
+        val error = assertThrows<NotFoundException> {
             customerService.update(fakeCustomer)
         }
 
@@ -154,7 +153,7 @@ class CustomerServiceTest {
         val fakeCustomer = buildCustomer(id = id)
         val expectedCustomer = fakeCustomer.copy(status = CustomerStatus.INATIVO)
 
-        every { customerService.findById(id ) } returns fakeCustomer
+        every { customerService.findById(id) } returns fakeCustomer
         every { customerRepository.save(expectedCustomer) } returns fakeCustomer
         every { bookService.deleteByCustomer(fakeCustomer) } just runs
 
@@ -170,7 +169,11 @@ class CustomerServiceTest {
         val id = Random().nextInt()
         val fakeCustomer = buildCustomer(id = id)
 
-        every { customerService.findById(id ) } throws NotFoundException(Errors.ML201.message.format(id), Errors.ML201.code)
+        every { customerService.findById(id) } throws NotFoundException(
+            Errors.ML201.message.format(
+                id
+            ), Errors.ML201.code
+        )
 
         val error = assertThrows<NotFoundException> { customerService.delete(id) }
 
@@ -206,21 +209,5 @@ class CustomerServiceTest {
         assertFalse(emailAvailable)
         verify(exactly = 1) { customerRepository.existsByEmail(email) }
     }
-
-
-    private fun buildCustomer(
-        id: Int? = null,
-        name: String = "${UUID.randomUUID()} customer name",
-        email: String = "${UUID.randomUUID()}@email.com",
-        password: String = "password"
-    ) = CustomerModel(
-        id = id,
-        name = name,
-        email = email,
-        status = CustomerStatus.ATIVO,
-        password = password,
-        roles = setOf(Role.CUSTOMER)
-    )
-
 
 }
