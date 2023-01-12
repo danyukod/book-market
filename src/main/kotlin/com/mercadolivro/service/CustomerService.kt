@@ -22,14 +22,14 @@ class CustomerService(
         name?.let {
             return customerRepository.findByNameContaining(it)
         }
-        return customerRepository.findAll()
+        return customerRepository.findAll().toList()
     }
 
     fun getAll(name: String?, pageable: Pageable): Page<CustomerModel> {
         name?.let {
             return customerRepository.findByNameContaining(it, pageable)
         }
-        return customerRepository.findAll(pageable)
+        return Page.empty()
     }
 
     fun create(customer: CustomerModel) {

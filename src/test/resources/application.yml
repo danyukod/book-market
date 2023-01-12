@@ -3,12 +3,12 @@ spring:
     active: test
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
   jackson:
     default-property-inclusion: non_null
   datasource:
-    url: jdbc:mysql://localhost:3306/mercadolivro?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://localhost:3306/mercadolivrotest?createDatabaseIfNotExist=true&useTimezone=true&serverTimezone=UTC&useSSL=false
     username: root
     password: root
 

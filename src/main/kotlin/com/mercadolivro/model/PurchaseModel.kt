@@ -1,9 +1,11 @@
 package com.mercadolivro.model
 
+import com.mercadolivro.annotation.NoArg
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.persistence.*
 
+@NoArg
 @Entity(name = "purchase")
 data class PurchaseModel (
     @Id

@@ -1,11 +1,13 @@
 package com.mercadolivro.model
 
+import com.mercadolivro.annotation.NoArg
 import com.mercadolivro.enums.BookStatus
 import com.mercadolivro.enums.Errors
 import com.mercadolivro.exception.BadRequestException
 import java.math.BigDecimal
 import javax.persistence.*
 
+@NoArg
 @Entity(name= "book")
 data class BookModel(
 
