@@ -10,7 +10,6 @@ import com.mercadolivro.extension.toResponse
 import com.mercadolivro.security.OnlyAdmin
 import com.mercadolivro.security.OnlyUser
 import com.mercadolivro.service.CustomerService
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
@@ -23,10 +22,16 @@ class CustomerController(
     private val customerService: CustomerService
 ) {
 
+    @GetMapping("pageable")
+    @OnlyAdmin
+    fun getAllPageable(@RequestParam name: String?, @PageableDefault(page = 0, size = 10) pageable: Pageable): PageResponse<CustomerResponse> {
+        return customerService.getAll(name, pageable).map { it.toResponse() }.toPageResponse()
+    }
+
     @GetMapping
     @OnlyAdmin
-    fun getAll(@RequestParam name: String?, @PageableDefault(page = 0, size = 10) pageable: Pageable): PageResponse<CustomerResponse> {
-        return customerService.getAll(name, pageable).map { it.toResponse() }.toPageResponse()
+    fun getAll(@RequestParam name: String?): List<CustomerResponse> {
+        return customerService.getAll(name).map { it.toResponse() }
     }
 
     @PostMapping
